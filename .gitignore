@@ -1,7 +1,9 @@
 #Building folder
 bin
 build
+lib
 msg_gen
+src/PTrackingBridge
 
 # Compiled Object files
 *.slo
