@@ -1,28 +1,25 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8.3)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
+project(PTrackingBridge)
+
 set(ROS_BUILD_TYPE Release)
 
-rosbuild_init()
+find_package(catkin REQUIRED COMPONENTS geometry_msgs message_generation roscpp std_msgs)
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-#set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+add_message_files(FILES
+				  TargetEstimations.msg
+)
 
-#uncomment if you have defined messages
-rosbuild_genmsg()
-#uncomment if you have defined services
-#rosbuild_gensrv()
+generate_messages(DEPENDENCIES geometry_msgs std_msgs)
+
+catkin_package(CATKIN_DEPENDS message_runtime
+)
+
+include_directories(${catkin_INCLUDE_DIRS})
 
 file(GLOB_RECURSE PTrackingBridge_src "src/*.cpp")
 
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-rosbuild_add_executable(PTrackingBridge ${PTrackingBridge_src})
+add_executable(PTrackingBridge ${PTrackingBridge_src})
+target_link_libraries(PTrackingBridge ${catkin_LIBRARIES})
+
+add_dependencies(PTrackingBridge ${PROJECT_NAME}_generate_messages_cpp)
